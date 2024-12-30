@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES6",  // Chọn phiên bản ECMAScript bạn muốn biên dịch đến
+    "module": "commonjs",  // Sử dụng commonjs module
+    "outDir": "./dist",  // Đặt thư mục xuất ra là dist
+    "rootDir": "./src",  // Đặt thư mục gốc của mã nguồn là src
+    "esModuleInterop": true,  // Hỗ trợ nhập khẩu module ES
+    "strict": true  // Bật các kiểm tra nghiêm ngặt
+  },
+  "include": ["src/**/*.ts"],  // Bao gồm tất cả tệp .ts trong thư mục src
+  "exclude": ["node_modules"]  // Loại trừ thư mục node_modules
+}

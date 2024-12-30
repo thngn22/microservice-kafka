@@ -1,0 +1,67 @@
+services:
+  user-service:
+    build:
+      context: ./user-service
+    ports:
+      - "5001:5001"  # Mapping from host port to container port
+    networks:
+      - ecommerce_network
+    depends_on:
+      - shared-service
+
+  product-service:
+    build:
+      context: ./product-service
+    ports:
+      - "5002:5002"  # Mapping from host port to container port
+    networks:
+      - ecommerce_network
+    depends_on:
+      - shared-service
+
+  order-service:
+    build:
+      context: ./order-service
+    ports:
+      - "5003:5003"  # Mapping from host port to container port
+    networks:
+      - ecommerce_network
+    depends_on:
+      - user-service
+      - product-service
+      - shared-service
+
+  shared-service:
+    build:
+      context: ./shared
+    ports:
+      - "5004:5004"  # Mapping cổng 5004 trên host đến cổng 5004 trong container
+    networks:
+      - ecommerce_network
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    environment:
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092  # Đổi từ INSIDE thành PLAINTEXT
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+    ports:
+      - "9092:9092"  # Đổi từ 9093 sang 9092
+    networks:
+      - ecommerce_network
+    depends_on:
+      - zookeeper
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+    ports:
+      - "2181:2181"
+    networks:
+      - ecommerce_network
+
+networks:
+  ecommerce_network:
+    driver: bridge
